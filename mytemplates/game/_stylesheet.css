@@ -1,0 +1,43 @@
+dl
+{
+	padding: 10px;
+	min-width: 960px;
+}
+	dl dt
+	{
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border: 1px solid #cccccc;
+		margin: 0;
+	}
+		dl dt a
+		{
+			color: #000000;
+			font-weight: bold;
+			text-decoration: none;
+			padding: 10px;
+			display: block;
+		}
+	dl dd
+	{
+		margin: 0;
+		height: 0;
+		overflow: hidden;
+		-webkit-transition: height 1s ease;
+	}
+		dl dd p
+		{
+			padding: 10px;
+			margin: 0;
+		}
+	dl dd:target
+	{
+		height: auto;
+	}
+ 
+@media (-webkit-transition) {
+	dl dd:target
+	{
+		height: 6.667em;
+	}
+}

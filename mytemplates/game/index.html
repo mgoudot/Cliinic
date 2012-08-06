@@ -1,0 +1,50 @@
+{% extends "game/base.html" %}
+
+{% block content %}
+
+<h1>Welcome to your very own Cliinic !</h1>
+
+<div class="span6 offset3 well">
+	<h3>The context...</h3>
+<p>This is where it all begins.
+	<br/>
+	It seems the country's witnessing an outbreak of common pathologies. But no clear pattern emerges.
+	<br/>
+	It's not a virus, or an epidemic. No clear pattern emerges, everyone is befuddled.
+	<br/>
+	The emergency is such that the authorities called on beginners such as yourself to give a hand and try to diagnose those patients.
+	<br/>
+	<h3>Will you take up the challenge?</h3>
+</div>
+
+<h3>Today, three people need your specific attention.</h3>
+
+<br/>
+
+<div class="span6 offset4" >
+{% if patient_list %}
+		{% for patient in patient_list %}
+			{% if patient.active %}
+				{% if patient.difficulty = 1 %}
+					<a class="btn btn-large btn-success" href ="/game/{{ patient.id }}/">
+				{% endif %}
+				{% if patient.difficulty = 2 %}
+					<a class="btn btn-large btn-warning" href ="/game/{{ patient.id }}/">
+				{% endif %}
+				{% if patient.difficulty = 3 %}
+					<a class="btn btn-large btn-danger" href ="/game/{{ patient.id }}/">
+				{% endif %}	
+						<img alt="{{ patient.difficulty }}" src = "/static/diff_lvl_{{ patient.difficulty }}.png">
+						</br>
+						{{ patient.name }}
+				</a>
+			{% endif %}
+		{% endfor %}
+
+{% else %}
+
+	<p>No one in the waiting room. Have a coke.</p>
+
+{% endif %}
+
+{% endblock %}

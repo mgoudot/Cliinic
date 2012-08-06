@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<title>
+			HTML Sheriff IV
+		</title>
+	</head>
+	<bdoy>
+		<script type="text/javascript">
+			var joueur1 = {
+				balles: 0,
+				block: false,
+				reload: false,
+				fire: false,
+				hp: 100+Math.round(Math.random())*25,
+				played: false
+			},
+				joueur2 = {
+				balles: 0,
+				block: false,
+				reload: false,
+				fire: false,
+				hp: 100+Math.round(Math.random())*25,
+				played: false
+			};
+
+			document.addEventListener("keyup", keypressed, false);
+
+			function keypressed(e) {
+				switch(e.keyCode) {
+					//q
+					case 81:
+						if(!joueur1.played) {
+							joueur1.balles++;
+							joueur1.reload = true;
+							joueur1.played = true;
+							document.getElementById("j1").style.backgroundColor = "green";
+						}
+						break;
+					//s
+					case 83:
+						if(!joueur1.played && joueur1.balles > 0) {
+							joueur1.balles--;
+							joueur1.fire = true;
+							joueur1.played = true;
+							document.getElementById("j1").style.backgroundColor = "green";
+						}
+						break;
+					//d
+					case 68:
+						if(!joueur1.played) {
+							joueur1.block = true;
+							joueur1.played = true;
+							document.getElementById("j1").style.backgroundColor = "green";
+						}
+						break;
+					//k
+					case 75:
+						if(!joueur2.played) {
+							joueur2.balles++;
+							joueur2.reload = true;
+							joueur2.played = true;
+							document.getElementById("j2").style.backgroundColor = "green";
+						}
+						break;
+					//l
+					case 76:
+						if(!joueur2.played && joueur2.balles > 0) {
+							joueur2.balles--;
+							joueur2.fire = true;
+							joueur2.played = true;
+							document.getElementById("j2").style.backgroundColor = "green";
+						}
+						break;
+					//m
+					case 77:
+						if(!joueur2.played) {
+							joueur2.block = true;
+							joueur2.played = true;
+							document.getElementById("j2").style.backgroundColor = "green";
+						}
+						break;
+					default:
+						console.log(e.keyCode);
+				}
+
+				if(joueur1.played && joueur2.played)
+					checkRound();
+				console.log(joueur1);
+				console.log(joueur2);
+
+			}
+
+			function checkRound() {
+				document.getElementById("log").innerHTML = "Joueur 1 a "+joueur1.balles+" balles et "+joueur1.hp+"HP. Joueur 2 a "+joueur2.balles+" balles et "+joueur2.hp+"HP.";
+				if(joueur1.fire && joueur2.reload) {
+					joueur2.hp -= 25;
+					//window.location.href = window.location.href;
+				} else if(joueur2.fire && joueur1.reload) {
+					joueur1.hp -= 25;
+					//window.location.href = window.location.href;
+				} 
+				for(var i in joueur1) {
+					if(i!="balles" && i!="hp") {
+						joueur1[i] = false;
+						joueur2[i] = false;
+					}
+				}
+				document.getElementById("j1").style.backgroundColor = "white";
+				document.getElementById("j2").style.backgroundColor = "white";
+			}
+		</script>
+		<div id="j1">joueur 1</div>
+		<div id="j2">joueur 2</div>
+		<div id="log"></div>
+	</body>
+</html>

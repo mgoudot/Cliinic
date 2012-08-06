@@ -1,0 +1,80 @@
+body
+{
+	vertical-align: center;
+	max-width: 960px;
+	display: block;
+	margin: 0 auto;
+}
+
+.logo
+{
+	float: left;
+	display: block;
+	max-width: 300px;
+}
+
+
+#hello
+{
+	float:	right;
+	max-width: 300px;
+	display: block;
+}
+
+dl
+{
+	padding: 10px;
+	max-width: 470px;
+}
+	dl dt
+	{
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border: 1px solid #cccccc;
+		margin: 0;
+	}
+		dl dt a
+		{
+			color: #000;
+			font-weight: bold;
+			text-align: center/justify;
+			text-decoration: none;
+			padding: 10px;
+			display: block;
+		}
+	dl dd
+	{
+		margin: 0;
+		height: 0;
+		overflow: hidden;
+		-webkit-transition: height 1s ease;
+	}
+		dl dd p
+		{
+			padding: 10px;
+			margin: 0;
+		}
+	dl dd:target
+	{
+		height: auto;
+	}
+
+#action_menu
+{
+	display: block;
+	float: left;
+	max-width: 480px ;
+}
+
+#patient_image
+{
+	display: block;
+	float: right;
+}
+ 
+@media (-webkit-transition) {
+	dl dd:target
+	{
+		height: 6.2em;
+	}
+}

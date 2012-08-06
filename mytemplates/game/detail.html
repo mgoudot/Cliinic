@@ -1,0 +1,120 @@
+{% extends "game/base.html" %}
+
+
+{% block sidebar %}
+
+    <!-- Le Action Menu
+    ================================================== -->
+
+<a class="btn" href="/game"><i class="icon-arrow-left"></i> Back to patient list</a>
+<p>
+<h3>Action menu</h3>
+</p>
+<p>
+<ul class="nav nav-pills nav-stacked">
+	<li class="active"><a  href="#investigate" data-toggle="tab">Investigate</a></li>
+	<li><a href="#treat" data-toggle="tab">Treat</a></li>
+</ul>
+
+{% endblock %}
+	
+{% block content %}
+
+<div class="span7">
+<h1>{{ case.patient }}</h1>
+<p>It seems like {{ case.patient }} is sick. You ask him what he suffers from.</p>
+
+<p>{{ case.history }}</p>
+
+<p>What type of investigations would you order to find out what's he's suffering from?</p>
+</div>
+
+<div class="span2 pull-right">
+	<img id = "patient_image" src = "/static/{{ case.patient.name }}.png" height = 300 width = 150>
+</div>
+
+
+{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class="span7 symptoms">
+	{% for s in symptoms %}
+		{% if s.active %}
+			{% if s.status = 1 %}	
+				<a class="span1 btn-danger btn-large symptom" href="#">{{ s.name }}</a>
+			{% endif %}
+			{% if s.status = 2 %}	
+				<a class="span1 btn btn-large symptom" href="#">{{ s.name }}</a>
+			{% endif %}
+			{% if s.status = 3 %}	
+				<a class="span1 btn-success btn-large symptom" href="#">{{ s.name }}</a>
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+</div>
+
+<div class="span7">
+
+<!-- THE INVESTIGATION TAB -->
+
+<div class="tab-content">
+	<div class="tab-pane active" id="investigate">
+		<form action="/game/{{ case.patient.id }}/investigate/" method="post">
+
+			<p><strong>{{ success }}</strong></p>	
+
+		{% csrf_token %}
+
+		{% for type in i_types %}
+			<dt><a href="#{{ type.name }}">{{ type.name }}</a></dt>
+				<dd id="{{ type.name }}">
+					{% for investigation in investigations %}
+						{% if investigation.invtype = type %}
+							{% for investigate in investigates %}
+								{% if investigate.name = investigation %}
+			  						<button class="btn" type="submit" name="investigate" value={{ investigate.id }}>{{ investigate.name }}</button>
+			  					{% endif %}
+			  				{% endfor %}
+			  			{% endif %}
+		  			{% endfor %}
+				</dd>
+		{% endfor %}
+
+
+		</form>
+
+	</div>
+
+<!-- THE TREATMENT TAB -->
+
+	<div class="tab-pane" id="treat">
+		<form action="/game/{{ case.patient.id }}/treat/" method="post">
+
+			<p><strong>{{ success }}</strong></p>	
+
+		{% csrf_token %}
+			<dl>
+				<dt><a href="#Treatment">Available Treatments</a></dt>
+				<dd id="Treatment">
+					{% for treat in t%}
+		  				<button class="btn" type="submit" name="treat" value={{ treat.id }}>{{ treat.name }}</button>
+		  			{% endfor %}
+				</dd>
+
+		</form>
+	</div>
+</div>
+
+</div>
+
+
+    <script type="text/javascript">
+    $('#myTab a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+})
+    </script>
+
+
+
+
+{% endblock %}
