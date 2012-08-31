@@ -24,14 +24,24 @@ def index(request):
 @login_required(login_url='/game/login/')
 def detail(request, patient_id):
 	p = get_object_or_404(Patient, pk = patient_id)
+	# I just read that using get_or_create shouldn't be done in Django views.
+	# So we should find another way to instantiate everything
+	pstate, created= p.patientstate_set.get_or_create(patient=p, player=request.user)
 	c = p.case_set.get(pk=patient_id)
 	u = request.user.get_profile()
 	#Break down investigates by investigation types (lookup on the foreign key)
 	#Could be more elegant by doing a double loop on investigation types and on investigates
-	i_types = InvestigationType.objects.filter(investigation__investigate__patient=patient_id)
+	i_types = InvestigationType.objects.filter(investigation__investigate__patient=patient_id).distinct()
 	investigations = Investigation.objects.filter(investigate__patient=patient_id)
 	i = p.investigate_set.all()
 	s = p.symptom_set.all()
+	sstates = []
+	for symptom in s:
+		sstate, created = symptom.symptomstate_set.get_or_create(player=request.user, patient=pstate, name=symptom, defaults={'status' : symptom.initialstatus})
+		if symptom.investigate == None:
+			sstates.append(sstate)
+		elif sstate.active ==True:
+			sstates.append(sstate)
 	t = p.treat_set.all()
 	return render_to_response('game/detail.html', {
 	'case' : c,
@@ -41,7 +51,7 @@ def detail(request, patient_id):
 	'i_types' : i_types,
 	'investigations' : investigations,
 	'investigates' : i,
-	'symptoms' : s,
+	'symptoms' : sstates,
 	't' : t,
 	},
 	context_instance=RequestContext(request))
@@ -51,18 +61,22 @@ def detail(request, patient_id):
 def investigate(request, patient_id):
 	#allows to get and manipulate the targeted investigation.
 	p = get_object_or_404(Patient, pk = patient_id)
+	# the get_or_create methods returns the object and a boolean that indicates if the creation happened.
+	pstate, created= p.patientstate_set.get_or_create(patient=p, player=request.user)
 	c = p.case_set.get(pk=patient_id)
 	u = request.user.get_profile()
 	i = c.investigate_set.get(id=request.POST['investigate'])
 	si = i.symptom_set.all()
 	for symptom in si:
-		symptom.active = True
-		symptom.save()
-	i.ordered = True
-	i.save()
+		ss, created = symptom.symptomstate_set.get_or_create(player=request.user, patient=pstate, name=symptom, defaults={'status' : symptom.initialstatus})
+		ss.active = True
+		ss.save()
+	istate, created = i.investigatestate_set.get_or_create(player=request.user, patient=pstate, investigate=i)
+	istate.ordered = True
+	istate.save()
 
 	#the comparison between what's ordered and what's needed for investigations.
-	if i.ordered == i.needed:
+	if istate.ordered == i.needed:
 		#gets the user xp and rep counts to increase them with the reward values of each uncovered symptoms
 		#pt = u.get_profile().patientsTreated
 		for symptom in si:
@@ -88,18 +102,21 @@ def investigate(request, patient_id):
 def treat(request, patient_id):
 	#allows to get and manipulate the targeted investigation.
 	p = get_object_or_404(Patient, pk = patient_id)
+	pstate, created = p.patientstate_set.get_or_create(patient=p, player=request.user)
 	c = p.case_set.get(pk=patient_id)
 	u = request.user.get_profile()
 	t = c.treat_set.get(id=request.POST['treat'])
+	tstate, created = t.treatstate_set.get_or_create(player=request.user, treat=t, patient=pstate)
 	st = t.symptom_set.all()
 	for symptom in st:
-		symptom.status = 3
-		symptom.save()
-	t.ordered = True
-	t.save()
+		ss, created = symptom.symptomstate_set.get_or_create(player=request.user, patient=pstate, name=symptom, status=symptom.initialstatus)
+		ss.satus = 3
+		ss.save()
+	tstate.ordered = True
+	tstate.save()
 
 	#the comparison between what's ordered and what's needed for investigations.
-	if t.ordered == t.needed:
+	if tstate.ordered == t.needed:
 		#gets the user xp and rep counts to increase them with the reward values of each uncovered symptoms
 		#pt = u.get_profile().patientsTreated
 		for symptom in st:
@@ -125,6 +142,6 @@ def treat(request, patient_id):
 def logout_user(request):
 	logout(request)
 	#redirect to a success page
-	return HttpResponse("Successfully logged out.")
+	return HttpResponseRedirect('../')
 
 #Strength comes from pepperonis. Don't let anyone disprove that.

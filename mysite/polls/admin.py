@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 #from website.game.models import UserProfile
 
-admin.site.unregister(User)
+admin.site.unregister(User) 
 
 class UserProfileInline(admin.StackedInline):
 	model = UserProfile

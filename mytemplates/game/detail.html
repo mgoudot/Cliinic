@@ -11,10 +11,10 @@
 <h3>Action menu</h3>
 </p>
 <p>
-<ul class="nav nav-pills nav-stacked">
+<!-- <ul class="nav nav-pills nav-stacked">
 	<li class="active"><a  href="#investigate" data-toggle="tab">Investigate</a></li>
 	<li><a href="#treat" data-toggle="tab">Treat</a></li>
-</ul>
+</ul> -->
 
 {% endblock %}
 	
@@ -39,7 +39,8 @@
 <div class="span7 symptoms">
 	{% for s in symptoms %}
 		{% if s.active %}
-			{% if s.status = 1 %}	
+<!-- 			<p>{{ s.status }}</p>
+ -->			{% if s.status = 1 %}	
 				<a class="span1 btn-danger btn-large symptom" href="#">{{ s.name }}</a>
 			{% endif %}
 			{% if s.status = 2 %}	
@@ -58,6 +59,7 @@
 
 <div class="tab-content">
 	<div class="tab-pane active" id="investigate">
+		<h3><a href="#Treatment">Available Investigations</a></h3>
 		<form action="/game/{{ case.patient.id }}/investigate/" method="post">
 
 			<p><strong>{{ success }}</strong></p>	
@@ -86,14 +88,14 @@
 
 <!-- THE TREATMENT TAB -->
 
-	<div class="tab-pane" id="treat">
+<!-- 	<div class="tab-pane" id="treat"> -->
 		<form action="/game/{{ case.patient.id }}/treat/" method="post">
 
 			<p><strong>{{ success }}</strong></p>	
 
 		{% csrf_token %}
 			<dl>
-				<dt><a href="#Treatment">Available Treatments</a></dt>
+				<h3><a href="#Treatment">Available Treatments</a></h3>
 				<dd id="Treatment">
 					{% for treat in t%}
 		  				<button class="btn" type="submit" name="treat" value={{ treat.id }}>{{ treat.name }}</button>
@@ -101,7 +103,7 @@
 				</dd>
 
 		</form>
-	</div>
+<!-- 	</div> -->
 </div>
 
 </div>
