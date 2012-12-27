@@ -128,10 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polls',
     'game',
-    # A Voxe Hackathon game
-    #'versus',
     # A database migration tool installed by me:
     'south',
     # Uncomment the next line to enable the admin:
